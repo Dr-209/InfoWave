@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../store/auth';
 
 
-const URL ="http://localhost:5000/api/auth/register"
+// const URL ="http://localhost:5000/api/auth/register"
 function Register() {
   const [user, setUser]=useState({
     username:"",
@@ -27,12 +27,12 @@ setUser({
   // Handle Submit
   const handleSubmit = async(e) =>{
     e.preventDefault();     //refresh na tahy ana mate
-  alert(user);
-  console.log(user);
+  // alert(user);
+  // console.log(Register su);
 
   try{
 
-  const response= await fetch(URL,
+  const response= await fetch(`http://localhost:5000/api/auth/register`,
     {
     method:"POST",
     headers : {"Content-Type" :"application/json",},
@@ -42,25 +42,27 @@ setUser({
 
   if (!response.ok) {
     // Log the response if the status is not OK
-    throw new Error('Failed to register');
+    const errorData =await response.json();
+    console.log("something wrong ")
+    throw new Error (errorData.message ||"Something Wrong" )
   }
 
-  if(response.ok){
+  // if(response.ok){
+    alert("Register Successfully")
  const res_data = await response.json();
-      console.log('respose from server', res_data);
-
+      // console.log('respose from server', res_data);
       // store token in localhsot
       storetokenInLS(res_data.token)
-    setUser({ username: "", email:"", phone:"", password:""
-    })
+    setUser({ username: "", email:"", phone:"", password:""})
     navigate("/login")
-  }
+  // }
   
   console.log('Response', response);
  
   }
 catch(error){
-  console.log("register error",error)
+  console.log("register error",error),
+  alert(error.message)
 }
 }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './Contact.css'
 
+// const URL ="http://localhost:5173/contact"
 function Contact() {
   const [contact, setContact] =useState({
     username:"",
@@ -18,10 +19,38 @@ function Contact() {
     })
   }
 
-const handleSubmit =(e)=>{
+const handleSubmit =async(e)=>{
 e.preventDefault();
-alert("Thanks for contact us");
-console.log(contact)
+// alert("Thanks for contact us");
+// console.log(contact)
+
+try {
+  const response= await fetch(`http://localhost:5000/contact`,{
+    method:"POST",
+    headers:{"Content-Text":"application/json"},
+    body:JSON.stringify(contact)
+  },
+);
+  if(!response.ok){
+    const errorData =await response.json();
+      console.log("something wrong ")
+      throw new Error (errorData.message ||"Something Wrong" )
+    // throw new Error("Failed to submit contact form")
+  }
+  alert("Thanks for contact us!")
+  const resData = await response.json();
+      console.log('Response from server', resData);
+
+      // Reset form
+      setContact({
+        username: "",
+        email: "",
+        message: ""
+      });
+  
+} catch (error) {
+  console.log("Contact Form submission error", error)
+}
 }
 
   return (
